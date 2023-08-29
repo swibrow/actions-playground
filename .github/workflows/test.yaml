@@ -33,10 +33,47 @@ jobs:
         if: github.event_name == 'pull_request'
         with:
           script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Event Context Output')
+            })
+
+            const output = `<details><summary>Event Context Output</summary>
+
             \`\`\`\n
             ${{ steps.event_context.outputs.stdout }}
             \`\`\`
 
+
+            </details>
+
+            <details><summary>Github Context Put</summary>
+
             \`\`\`\n
             ${{ steps.github_context.outputs.stdout }}
             \`\`\`
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
+
