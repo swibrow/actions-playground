@@ -45,16 +45,16 @@ jobs:
             const output = `<details><summary>Event Context Output</summary>
 
             \`\`\`\n
-            ${{ steps.event_context.outputs.stdout }}
+            ${{ toJson(github.event) }}
             \`\`\`
 
 
             </details>
 
-            <details><summary>Github Context Put</summary>
+            <details><summary>Github Context Output</summary>
 
             \`\`\`\n
-            ${{ steps.github_context.outputs.stdout }}
+            ${{ toJson(github) }}
             \`\`\`
 
             </details>
