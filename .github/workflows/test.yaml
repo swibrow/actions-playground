@@ -1,0 +1,42 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+  packages: write
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  output:
+    runs-on: ubuntu-latest
+    name: Output event
+    steps:
+      - name: Event Context
+        id: event_context
+        run: echo '${{ toJson(github.event) }}'
+
+      - name: Github Context
+        id: github_context
+        run: echo '${{ toJson(github) }}'
+
+      - name: Update Pull Request
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            \`\`\`\n
+            ${{ steps.event_context.outputs.stdout }}
+            \`\`\`
+
+            \`\`\`\n
+            ${{ steps.github_context.outputs.stdout }}
+            \`\`\`
