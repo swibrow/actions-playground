@@ -18,3 +18,6 @@ https://github.com/terraform-docs/gh-actions
 
 https://github.com/reviewdog/action-setup
 
+
+Inkorectily spelt woord
+
