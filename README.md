@@ -16,3 +16,5 @@ https://github.com/bridgecrewio/checkov-action
 
 https://github.com/terraform-docs/gh-actions
 
+https://github.com/reviewdog/action-setup
+
