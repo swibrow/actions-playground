@@ -1,3 +1,3 @@
 # actions-playground
 
-## Test GitHub Actions
+Test PR Template
