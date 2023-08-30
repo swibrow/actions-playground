@@ -16,6 +16,10 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  test:
+    name: Test and lint
+    uses: swibrow/.github/.github/workflows/lint.yml@main
+
   output:
     runs-on: ubuntu-latest
     name: Output event
