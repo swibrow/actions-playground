@@ -1,10 +1,14 @@
 name: Run Remote Workflow
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_run:
+    workflows: ["Review Dog"]
+    types:
+      - completed
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
 
 permissions:
   contents: read

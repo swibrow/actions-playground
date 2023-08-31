@@ -1,4 +1,4 @@
-name: reviewdog GitHub Action
+name: Review Dog GitHub Action
 on: [pull_request]
 jobs:
   actionlint:
