@@ -1,0 +1,42 @@
+name: Job dependencies
+
+on: [push]
+
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build
+        run: echo "Build" >> build.txt
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build.txt
+          path: build.txt
+  test1:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: build.txt
+      - name: Test 1
+        run: cat build.txt
+  test2:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: build.txt
+      - name: Test 2
+        run: cat build.txt
+  release:
+    runs-on: ubuntu-latest
+    needs: [test1, test2]
+    steps:
+      - name: Release
+        run: echo "Release"
+
