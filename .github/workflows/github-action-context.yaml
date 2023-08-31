@@ -1,4 +1,8 @@
-name: Test
+name: GitHub Action for Context Output
+
+permissions:
+  contents: read
+  pull-requests: write
 
 on:
   push:
@@ -6,41 +10,13 @@ on:
       - main
   pull_request:
 
-permissions:
-  contents: read
-  packages: write
-  pull-requests: write
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
-  test:
-    name: "Reuse workflow: Test and lint"
-    uses: swibrow/.github/.github/workflows/lint.yml@main
-
-  reviewdog:
-    runs-on: ubuntu-latest
-    name: Review Dog
-    steps:
-      - uses: actions/checkout@v3
-      - name: misspell
-        uses: reviewdog/action-misspell@v1
-        with:
-          github_token: ${{ secrets.github_token }}
-          locale: "AU"
-
   output:
     runs-on: ubuntu-latest
-    name: Output event
+    name: Output Context to Pull Request
     steps:
-      - name: Event Context
-        id: event_context
-        run: echo '${{ toJson(github.event) }}'
-
       - name: Github Context
-        id: github_context
+        id: github
         run: echo '${{ toJson(github) }}'
 
       - name: Update Pull Request
@@ -56,15 +32,6 @@ jobs:
             const botComment = comments.find(comment => {
               return comment.user.type === 'Bot' && comment.body.includes('Event Context Output')
             })
-
-            const output = `<details><summary>Event Context Output</summary>
-
-            \`\`\`\n
-            ${{ toJson(github.event) }}
-            \`\`\`
-
-
-            </details>
 
             <details><summary>Github Context Output</summary>
 
@@ -91,4 +58,3 @@ jobs:
                 body: output
               })
             }
-
