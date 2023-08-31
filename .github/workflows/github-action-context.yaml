@@ -1,0 +1,60 @@
+name: GitHub Action for Context Output
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  output:
+    runs-on: ubuntu-latest
+    name: Output Context to Pull Request
+    steps:
+      - name: Github Context
+        id: github
+        run: echo '${{ toJson(github) }}'
+
+      # - name: Update Pull Request
+      #   uses: actions/github-script@v6
+      #   if: github.event_name == 'pull_request'
+      #   with:
+      #     script: |
+      #       const { data: comments } = await github.rest.issues.listComments({
+      #         owner: context.repo.owner,
+      #         repo: context.repo.repo,
+      #         issue_number: context.issue.number,
+      #       })
+      #       const botComment = comments.find(comment => {
+      #         return comment.user.type === 'Bot' && comment.body.includes('Event Context Output')
+      #       })
+
+      #       <details><summary>Github Context Output</summary>
+
+      #       \`\`\`\n
+      #       TEST
+      #       \`\`\`
+
+      #       </details>
+
+      #       *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Workflow: \`${{ github.workflow }}\`*`;
+
+      #       if (botComment) {
+      #         github.rest.issues.updateComment({
+      #           owner: context.repo.owner,
+      #           repo: context.repo.repo,
+      #           comment_id: botComment.id,
+      #           body: output
+      #         })
+      #       } else {
+      #         github.rest.issues.createComment({
+      #           issue_number: context.issue.number,
+      #           owner: context.repo.owner,
+      #           repo: context.repo.repo,
+      #           body: output
+      #         })
+      #       }
