@@ -15,9 +15,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Output Context to Pull Request
     steps:
-      - name: Github Context
-        id: github
-        run: echo '${{ toJson(github) }}'
+      # - name: Github Context
+      #   id: github
+      #   run: echo '${{ toJson(github) }}'
 
       - name: Update Pull Request
         uses: actions/github-script@v6
@@ -36,7 +36,7 @@ jobs:
             <details><summary>Github Context Output</summary>
 
             \`\`\`\n
-            ${{ toJson(github) }}
+
             \`\`\`
 
             </details>
