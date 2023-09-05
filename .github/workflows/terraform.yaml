@@ -32,14 +32,12 @@ on:
       state_bucket:
         description: 'The S3 bucket to store the state'
         type: string
-        required: true
-        default: ""
+        required: false
 
       state_key:
         description: 'The S3 key to store the state'
         type: string
-        required: true
-        default: ""
+        required: false
 
       terraform_dir:
         description: 'The directory where the Terraform files are located'
