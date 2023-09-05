@@ -53,6 +53,7 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      pull-requests: write
 
     concurrency:
       group: ${{ github.head_ref || github.run_id }}
@@ -75,8 +76,10 @@ jobs:
     - name: Terraform Init
       id: init
       run: >
-        terraform init
-         -chdir="${{ inputs.terraform_dir }}"
+        terraform
+        -chdir="${{ inputs.terraform_dir }}"
+        init
+      #  -chdir="${{ inputs.terraform_dir }}"
       #  -backend-config="key=${{ inputs.state_key }}"
       #  -backend-config="bucket=${{ inputs.state_bucket }}"
       #  -reconfigure
@@ -84,32 +87,34 @@ jobs:
     - name: Terraform format
       id: fmt
       run: >
-        terraform fmt
-         -chdir="${{ inputs.terraform_dir }}"
-         -check
-         -recursive
+        terraform
+        -chdir="${{ inputs.terraform_dir }}"
+        fmt
+        -check
+        -recursive
 
     - name: Terraform Validate
       id: validate
       run: >
-        terraform validate
-         -chdir="${{ inputs.terraform_dir }}"
-         -recursive
+        terraform
+        -chdir="${{ inputs.terraform_dir }}"
+        validate
 
     - name: Terraform Plan
       id: plan
-      if: github.event_name == 'pull_request'
+      if: ${{ github.event_name == 'pull_request' }}
       run: >
-        terraform plan
-         -chdir="${{ inputs.terraform_dir }}"
-         -var="environment=${{ inputs.environment }}"
-         -var="github_repo=${{ github.event.repository.name }}"
-         -input=false
+        terraform
+        -chdir="${{ inputs.terraform_dir }}"
+        plan
+      # -var="environment=${{ inputs.environment }}"
+      # -var="github_repo=${{ github.event.repository.name }}"
+      # -input=false
       # -out="${{ inputs.environment }}_plan"
       continue-on-error: true
 
     - uses: actions/github-script@v6
-      if: github.event_name == 'pull_request'
+      if: ${{ github.event_name == 'pull_request' }}
       env:
         PLAN: "terraform\n${{ steps.plan.outputs.stdout }}"
       with:
@@ -143,5 +148,5 @@ jobs:
       if: github.ref == 'refs/heads/main' && github.event_name == 'push'
       run: >
         terraform apply
-         -chdir="${{ inputs.terraform_dir }}"
+        -chdir="${{ inputs.terraform_dir }}"
 
