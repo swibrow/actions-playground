@@ -2,6 +2,12 @@ name: 'Terraform Plan/Apply'
 
 on:
   workflow_call:
+    inputs:
+      pr_comment:
+        type: boolean
+        description: 'Comment on PR with Terraform Plan'
+        required: false
+        default: false
   push:
     branches:
     - main
@@ -103,7 +109,7 @@ jobs:
 
     # If this is a PR post the changes
     - name: Push Terraform Output to PR
-      if: github.ref != 'refs/heads/main'
+      if: github.ref != 'refs/heads/main' && env.pr_comment == 'true'
       uses: actions/github-script@v7
       env:
         SUMMARY: "${{ steps.tf-plan-string.outputs.summary }}"
