@@ -11,5 +11,5 @@ permissions:
 
 jobs:
   call-terraform:
-    uses: ./.github/workflows/terraform.yaml
+    uses: ./.github/workflows/tf-plan-apply.yaml
 
