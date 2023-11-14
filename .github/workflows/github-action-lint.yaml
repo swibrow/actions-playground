@@ -1,5 +1,9 @@
 name: Review Dog GitHub Action
-on: [pull_request]
+on:
+  push:
+    branches:
+      - main
+  # pull_request:
 jobs:
   actionlint:
     runs-on: ubuntu-latest
