@@ -1,17 +1,15 @@
 name: Call Terraform Workflow
 
 on:
-  push:
-    branches:
-      - main
-  # pull_request:
-
-permissions:
-  contents: read
-  id-token: write
-  pull-requests: write
+  pull_request:
 
 jobs:
   call-terraform:
-    uses: ./.github/workflows/tf-plan-apply.yaml
+    runs-on: ubuntu-latest
+    name: Call Terraform Workflow
 
+    steps:
+    - uses: actions/checkout@v4
+    - uses: swibrow/.github/.github/workflows/echo.yml@main
+      with:
+        path: README.md

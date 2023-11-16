@@ -8,12 +8,12 @@ on:
         description: 'Comment on PR with Terraform Plan'
         required: false
         default: false
-  push:
-    branches:
-    - main
-  pull_request:
-    branches:
-    - main
+  # push:
+  #   branches:
+  #   - main
+  # pull_request:
+  #   branches:
+  #   - main
 
 defaults:
   run:
