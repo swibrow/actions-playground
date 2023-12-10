@@ -1,0 +1,13 @@
+name: Self-Hosted
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  echo:
+    runs-on: arc-pitower2
+    steps:
+    - run: echo "Hello, world!"
