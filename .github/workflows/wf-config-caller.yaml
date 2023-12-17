@@ -5,9 +5,9 @@ jobs:
   config:
     uses: ./.github/workflows/wf-config.yaml
     # with:
-    #   config: ${{ github.event.inputs.config }}
+    #   config_path: ${{ github.event.inputs.config }}
 
-  matrix:
+  parallel:
     needs: config
     runs-on: ubuntu-latest
     strategy:
@@ -17,7 +17,16 @@ jobs:
     steps:
       - name: Matrix
         run: |
-          echo ${{ matrix.environment }}
+          echo "Deploying ${{ matrix.environment }}"
+          echo "Into AWS Account: ${{ matrix.aws_account_id }}"
+          echo "Into AWS Region: ${{ matrix.aws_region }}"
+          echo "Using AWS Role Name: ${{ matrix.aws_role_name }}"
+
+  single:
+    needs: config
+    uses: ./.github/workflows/wf-simple.yaml
+    with:
+      environment: dev
 
   get-config:
     needs: config
@@ -26,9 +35,3 @@ jobs:
       - name: Get config
         run: |
           echo '${{ needs.config.outputs }}'
-
-  deploy:
-    needs: config
-    uses: ./.github/workflows/wf-simple.yaml
-    with:
-      environment: dev

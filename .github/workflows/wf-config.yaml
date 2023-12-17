@@ -1,14 +1,14 @@
 name: Workflow config
 
 on:
-  # push:
   workflow_call:
     inputs:
-      config:
+      config_path:
         required: false
         type: string
         default: .github/config.yaml
       environment:
+        description: Pass evnironment name to environment details as outputs
         required: false
         type: string
 
@@ -43,25 +43,17 @@ jobs:
         id: config
         run: |
           if [ ${{ inputs.environment }} ]; then
-            aws_account_id=$(yq -o=json '.environment.${{ inputs.environment }}.aws_account_id' ${{ inputs.config }})
-            aws_region=$(yq -o=json '.environment.${{ inputs.environment }}.aws_region' ${{ inputs.config }})
-            aws_role_name=$(yq -o=json '.environment.${{ inputs.environment }}.aws_role_name' ${{ inputs.config }})
+            aws_account_id=$(yq -o=json '.environment.${{ inputs.environment }}.aws_account_id' ${{ inputs.config_path }})
+            aws_region=$(yq -o=json '.environment.${{ inputs.environment }}.aws_region' ${{ inputs.config_path }})
+            aws_role_name=$(yq -o=json '.environment.${{ inputs.environment }}.aws_role_name' ${{ inputs.config_path }})
 
             echo "aws_account_id=$aws_account_id" >> $GITHUB_OUTPUT
             echo "aws_region=$aws_region" >> $GITHUB_OUTPUT
             echo "aws_role_name=$aws_role_name" >> $GITHUB_OUTPUT
           fi
 
-          config=$(yq -o=json '.environment' ${{ inputs.config }} | jq -rc)
-          matrix=$(yq -o=json '.environment | to_entries | map({"environment": .key} + .value)' ${{ inputs.config }} | jq -rc)
+          config=$(yq -o=json '.environment' ${{ inputs.config_path }} | jq -rc)
+          matrix=$(yq -o=json '.environment | to_entries | map({"environment": .key} + .value)' ${{ inputs.config_path }} | jq -rc)
 
           echo "config=$config" >> $GITHUB_OUTPUT
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
-
-  # get-config:
-  #   needs: config
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Get config
-  #       run: |
-  #         echo '${{ needs.config.outputs.config }}' | jq .dev
