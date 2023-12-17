@@ -25,4 +25,10 @@ jobs:
     steps:
       - name: Get config
         run: |
-          echo '${{ needs.config.outputs.config }}'
+          echo '${{ needs.config.outputs }}'
+
+  deploy:
+    needs: config
+    uses: ./.github/workflows/wf-simple.yaml
+    with:
+      environment: dev
