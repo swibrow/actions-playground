@@ -5,10 +5,11 @@ permissions:
   pull-requests: write
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
+  workflow_dispatch:
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
 
 jobs:
   output:

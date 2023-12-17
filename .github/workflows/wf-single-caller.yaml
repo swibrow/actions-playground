@@ -1,0 +1,8 @@
+on:
+  push:
+
+jobs:
+  single:
+    uses: ./.github/workflows/wf-simple.yaml
+    with:
+      environment: dev

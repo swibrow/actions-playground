@@ -1,5 +1,10 @@
 name: Review Dog GitHub Action
-on: [pull_request]
+on:
+  # push:
+  #   branches:
+  #     - main
+  # pull_request:
+  workflow_dispatch:
 jobs:
   actionlint:
     runs-on: ubuntu-latest
