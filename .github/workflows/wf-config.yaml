@@ -11,19 +11,24 @@ on:
     outputs:
       config:
         value: ${{ jobs.config.outputs.config }}
+      matrix:
+        value: ${{ jobs.config.outputs.matrix }}
 
 jobs:
   config:
     runs-on: ubuntu-latest
     outputs:
       config: ${{ steps.config.outputs.config }}
+      matrix: ${{ steps.config.outputs.matrix }}
     steps:
       - uses: actions/checkout@v4
       - name: Workflow config
         id: config
         run: |
-          config=$(yq -o=json '.environments | to_entries | map({"environment": .key} + .value)' ${{ inputs.config }} | jq -rc)
+          config=$(yq -o=json ${{ inputs.config }} | jq -rc)
+          matrix=$(yq -o=json '.environment | to_entries | map({"environment": .key} + .value)' ${{ inputs.config }} | jq -rc)
           echo "config=$config" >> $GITHUB_OUTPUT
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   # get-config:
   #   needs: config

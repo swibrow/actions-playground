@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         include:
-          ${{ fromJson(needs.config.outputs.config) }}
+          ${{ fromJson(needs.config.outputs.matrix) }}
     steps:
       - name: Matrix
         run: |
