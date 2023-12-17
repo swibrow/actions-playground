@@ -1,0 +1,6 @@
+on:
+  push:
+
+jobs:
+  matrix:
+    uses: ./.github/workflows/wf-matrix.yaml
