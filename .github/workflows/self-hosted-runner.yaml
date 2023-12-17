@@ -1,13 +1,15 @@
 name: Self-Hosted
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  # push:
+  #   branches: [ main ]
+  # pull_request:
+  #   branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   echo:
-    runs-on: default
+    runs-on: ubuntu-latest
+    # runs-on: default
     steps:
     - run: echo "Hello, world! Self hosted runner"
