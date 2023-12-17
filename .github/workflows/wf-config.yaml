@@ -1,7 +1,16 @@
 name: Workflow config
 
 on:
-  push:
+  # push:
+  workflow_call:
+    inputs:
+      config:
+        required: false
+        type: string
+        default: .github/config.yaml
+    outputs:
+      config:
+        value: ${{ jobs.config.outputs.config }}
 
 jobs:
   config:
@@ -10,17 +19,16 @@ jobs:
       config: ${{ steps.config.outputs.config }}
     steps:
       - uses: actions/checkout@v4
-
       - name: Workflow config
         id: config
         run: |
-          config=$(yq -o=json .github/config.yaml | jq -c -r)
+          config=$(yq -o=json '.environments | to_entries | map({"environment": .key} + .value)' ${{ inputs.config }} | jq -rc)
           echo "config=$config" >> $GITHUB_OUTPUT
 
-  get-config:
-    needs: config
-    runs-on: ubuntu-latest
-    steps:
-      - name: Get config
-        run: |
-          echo ${{ toJson(needs.config.outputs.config) }}
+  # get-config:
+  #   needs: config
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Get config
+  #       run: |
+  #         echo '${{ needs.config.outputs.config }}' | jq .dev

@@ -1,0 +1,28 @@
+on:
+  push:
+
+jobs:
+  config:
+    uses: ./.github/workflows/wf-config.yaml
+    # with:
+    #   config: ${{ github.event.inputs.config }}
+
+  matrix:
+    needs: config
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          ${{ fromJson(needs.config.outputs.config) }}
+    steps:
+      - name: Matrix
+        run: |
+          echo ${{ matrix.environment }}
+
+  get-config:
+    needs: config
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get config
+        run: |
+          echo '${{ needs.config.outputs.config }}'
