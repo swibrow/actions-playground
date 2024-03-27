@@ -13,6 +13,7 @@ jobs:
   plan:
     runs-on: ubuntu-latest
     name: Create Terraform plan
+    environment: sandbox
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,3 +25,4 @@ jobs:
         with:
           path: terraform
           label: test
+          add_github_comment: false
