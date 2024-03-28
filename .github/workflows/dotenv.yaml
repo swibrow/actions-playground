@@ -1,0 +1,9 @@
+name: Load dotenv
+
+on:
+  pull_request:
+
+jobs:
+  test:
+    name: Load dotenv
+    uses: swibrow/reusable-workflows/.github/workflows/dotenv-loader.yaml@dotenv
