@@ -1,0 +1,18 @@
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  id-token: write
+  pull-requests: write
+
+jobs:
+  test_terraform_deploy_advanced:
+    name: Test TF Deploy Advanced
+    uses: tx-pts-dai/github-workflows/.github/workflows/tf-deploy-advanced.yaml@swibrow/example
+    with:
+      environments: |
+        sandbox
+        sandbox2
