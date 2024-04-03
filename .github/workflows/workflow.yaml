@@ -1,0 +1,69 @@
+name: Build and Deploy
+
+on:
+  pull_request:
+    branches: [main]
+
+  push:
+    branches: [main]
+
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+
+jobs:
+  build:
+    concurrency:
+      group: docker-build
+      cancel-in-progress: true
+    uses: tx-pts-dai/github-workflows/.github/workflows/docker-build-push-ecr.yaml@v0.8.0
+    with:
+      docker_push: true
+      environment: dev
+
+  integration:
+    if: github.event_name == 'pull_request'
+    needs: [build]
+    uses: tx-pts-dai/github-workflows/.github/workflows/tf-dflook-feature.yaml@v0.8.0
+    with:
+      environment: dev
+      tf_vars: |
+        git_branch="${{ github.event.pull_request.head.ref }}"
+        image_tag="${{ github.sha }}"
+
+  plan:
+    needs: [integration]
+    if: github.event_name == 'pull_request'
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [dev, prod]
+
+    uses: tx-pts-dai/github-workflows/.github/workflows/tf-dflook-plan.yaml@v0.8.0
+    with:
+      environment: ${{ matrix.environment }}
+      tf_vars: image_tag="${{ github.sha }}"
+
+  push:
+    if: github.ref_name == github.event.repository.default_branch && github.event_name == 'push'
+    uses: tx-pts-dai/github-workflows/.github/workflows/docker-build-push-ecr.yaml@v0.8.0
+    with:
+      environment: prod
+
+  apply:
+    if: github.ref_name == github.event.repository.default_branch && github.event_name == 'push'
+    name: Terraform Apply (main branch)
+    needs: [build]
+    concurrency:
+      group: terraform-apply
+      cancel-in-progress: false
+    strategy:
+      fail-fast: false
+      matrix:
+        environment: [dev, production]
+
+    uses: tx-pts-dai/github-workflows/.github/workflows/tf-dflook-apply.yaml@v0.8.0
+    with:
+      environment: ${{ matrix.environment }}
+      tf_vars: image_tag="${{ github.sha }}"
