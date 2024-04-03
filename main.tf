@@ -20,3 +20,6 @@ output "random_id" {
   value = random_id.this.id
 }
 
+output "test" {
+  value = "Test"
+}
