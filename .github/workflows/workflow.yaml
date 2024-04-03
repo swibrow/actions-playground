@@ -14,13 +14,16 @@ permissions:
 
 jobs:
   build:
+    if: github.event_name == 'pull_request'
     concurrency:
-      group: docker-build
+      group: ${{ github.head_ref }}
       cancel-in-progress: true
     uses: tx-pts-dai/github-workflows/.github/workflows/docker-build-push-ecr.yaml@v0.8.0
     with:
       docker_push: true
       environment: dev
+      # TODO: tag the image with the pr number or the pr name, this makes it easier to identify the image in the ECR for cleanup
+      # image_tags: ${{ github.sha }}, ${{ github.head_ref }}
 
   integration:
     if: github.event_name == 'pull_request'
@@ -56,12 +59,12 @@ jobs:
     name: Terraform Apply (main branch)
     needs: [build]
     concurrency:
-      group: terraform-apply
+      group: terraform-apply # Prevent multiple terraform apply jobs in the same repo
       cancel-in-progress: false
     strategy:
       fail-fast: false
       matrix:
-        environment: [dev, production]
+        environment: [dev, prod]
 
     uses: tx-pts-dai/github-workflows/.github/workflows/tf-dflook-apply.yaml@v0.8.0
     with:
