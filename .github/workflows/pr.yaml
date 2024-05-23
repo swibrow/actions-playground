@@ -3,7 +3,7 @@ name: Test PR branch ignore
 on:
   pull_request:
     branches-ignore:
-      - foo*
+      - foo**
 
 jobs:
   echo:
