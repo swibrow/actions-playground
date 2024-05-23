@@ -2,8 +2,6 @@ name: Test PR branch ignore
 
 on:
   pull_request:
-    branches:
-      - main
     branches-ignore:
       - foo_*
 
