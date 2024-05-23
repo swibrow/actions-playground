@@ -1,0 +1,12 @@
+name: Test PR branch ignore
+
+on:
+  pull_request:
+    branches-ignore:
+      - foo_*
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This is a PR branch that should be ignored"
