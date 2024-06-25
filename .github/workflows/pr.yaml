@@ -1,12 +1,17 @@
-name: Test PR branch ignore
+name: Test TAG Workflow
 
 on:
-  pull_request:
-    branches-ignore:
-      - foo_*
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
 
 jobs:
+  context:
+    runs-on: ubuntu-latest
+    steps:
+      - run: ${{ github }}
   echo:
+    if: github.ref_type == 'tag' && github.ref_name == '[0-9]+.[0-9]+.[0-9]+'
     runs-on: ubuntu-latest
     steps:
       - run: echo "This is a PR branch that should be ignored"
