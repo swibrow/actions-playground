@@ -1,0 +1,10 @@
+name: test empty matrix array
+
+on:
+  push:
+jobs:
+  echo:
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "This is a PR branch that should be ignored"
