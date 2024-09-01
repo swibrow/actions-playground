@@ -1,0 +1,19 @@
+name: Test TAG Workflow
+
+on:
+  push:
+
+jobs:
+  context:
+    runs-on: ubuntu-latest
+    steps:
+      - run: ${{ github }}
+  echo:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        foo: [1, 2, 3]
+        bar: []
+        baz: [a, b, c]
+    steps:
+      - run: echo ${{ matrix.foo }} ${{ matrix.bar }} ${{ matrix.baz }}
