@@ -4,16 +4,19 @@ on:
   push:
 
 jobs:
-  context:
-    runs-on: ubuntu-latest
-    steps:
-      - run: ${{ github }}
+  # context:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - run: ${{ github }}
   echo:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: true
+      max-parallel: 1
       matrix:
         foo: [1, 2, 3]
-        bar: []
-        baz: [a, b, c]
+        # bar: []
+        # baz: [a, b, c]
     steps:
-      - run: echo ${{ matrix.foo }} ${{ matrix.bar }} ${{ matrix.baz }}
+      - run: echo ${{ matrix.foo }}
+      - run: exit 1
