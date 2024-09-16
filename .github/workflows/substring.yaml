@@ -1,0 +1,12 @@
+name: Test substring
+
+on:
+  push:
+
+jobs:
+  echo:
+    runs-on: ubuntu-latest
+    env:
+      FOO: bar
+    steps:
+      - run: echo "${{ env.FOO:0:1 }}"
