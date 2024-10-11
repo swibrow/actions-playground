@@ -8,15 +8,31 @@ jobs:
   #   runs-on: ubuntu-latest
   #   steps:
   #     - run: ${{ github }}
-  echo:
-    runs-on: ubuntu-latest
+  # echo:
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     max-parallel: 1
+  #     matrix:
+  #       foo: [1, 2, 3]
+  #       # bar: []
+  #       # baz: [a, b, c]
+  #   steps:
+  #     - run: echo ${{ matrix.foo }}
+  #     - run: exit 1
+
+  plan:
     strategy:
       fail-fast: false
-      max-parallel: 1
       matrix:
-        foo: [1, 2, 3]
-        # bar: []
-        # baz: [a, b, c]
+        stack: [platform]
+        deployment: []
+        environment:
+          - fake-env
+    runs-on: ubuntu-latest
     steps:
-      - run: echo ${{ matrix.foo }}
-      - run: exit 1
+      - run: echo "${{ toJson(github) }}"
+      - run: echo "${{ toJson(matrix) }}"
+      - run: echo ${{ matrix.deployment }}
+      - run: echo ${{ matrix.environment }}
+      - run: echo ${{ join(matrix.*.stack, '-') }}
