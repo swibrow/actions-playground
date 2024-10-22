@@ -12,6 +12,8 @@ jobs:
     steps:
       - run: echo "${{ fromJson(env.stringjson).tenant_ingress_prefix }}"
       - run: echo "${{ fromJson(env.stringjson).tenant_ingress_prefix[0] }}"
+      - run: echo "${{ fromJson(fromJson(env.stringjson).tenant_ingress_prefix) }}"
+      - run: echo "${{ fromJson(fromJson(env.stringjson).tenant_ingress_prefix)[0] }}"
       - run: echo "${{ fromJson(env.json).tenant_ingress_prefix }}"
       - run: echo "${{ fromJson(env.json).tenant_ingress_prefix[0] }}"
       - run: echo "${{ env.json.tenant_ingress_preix }}"
