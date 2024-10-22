@@ -26,7 +26,7 @@ jobs:
       fail-fast: false
       matrix:
         stack: [platform]
-        deployment: []
+        deployment: ['']
         environment:
           - fake-env
     runs-on: ubuntu-latest

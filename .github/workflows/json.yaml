@@ -1,0 +1,11 @@
+name: Test json
+
+on:
+  push:
+
+jobs:
+  select:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "${{ fromJson('[\"sanitize-releasename\"]')[0] }}"
+
