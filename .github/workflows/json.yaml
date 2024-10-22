@@ -5,7 +5,10 @@ on:
 
 jobs:
   select:
+    env:
+      foo: '[\"sanitize-releasename\"]'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{ fromJson('[\"sanitize-releasename\"]')[0] }}"
+      - run:
+      - run: echo "${{ fromJson(env.foo)[0] }}"
 
