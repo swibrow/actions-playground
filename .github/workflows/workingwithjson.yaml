@@ -14,6 +14,6 @@ jobs:
       - run: echo "${{ fromJson(env.stringjson).tenant_ingress_prefix[0] }}"
       - run: echo "${{ fromJson(env.json).tenant_ingress_prefix }}"
       - run: echo "${{ fromJson(env.json).tenant_ingress_prefix[0] }}"
-      - run: echo "${{ toJson(env.foo) }}"
-      - run: |
-        echo "${{ fromJson("{"tenant_ingress_prefix": ["sanitize-releasename"]}).tenant_ingress_prefix[0] }}""
+      - run: echo "${{ toJson(env.stringjson) }}"
+      - run: echo "${{ toJson(env.json) }}"
+
