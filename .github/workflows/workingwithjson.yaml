@@ -9,6 +9,5 @@ jobs:
       foo: '[\"sanitize-releasename\"]'
     runs-on: ubuntu-latest
     steps:
-      - run:
       - run: echo "${{ fromJson(env.foo)[0] }}"
 
