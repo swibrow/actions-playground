@@ -6,8 +6,7 @@ on:
 jobs:
   runshit:
     env:
-      foo: '[\"sanitize-releasename\"]'
+      foo: '"tenant_ingress_prefix": "[\"sanitize-releasename\"]"'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{ fromJson(env.foo)[0] }}"
-
+      - run: echo "${{ fromJson(env.foo) }}"
