@@ -9,5 +9,5 @@ jobs:
       foo: '"tenant_ingress_prefix": "[\"sanitize-releasename\"]"'
     runs-on: ubuntu-latest
     steps:
-      - run: echo "${{ fromJson(env.foo) }}"
+      - run: echo "${{ fromJson(env.foo).tenant_ingress_prefix }}"
       - run: echo "${{ toJson(env.foo) }}"
