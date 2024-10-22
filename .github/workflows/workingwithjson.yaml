@@ -1,0 +1,14 @@
+name: Run shit
+
+on:
+  push:
+
+jobs:
+  runshit:
+    env:
+      foo: '[\"sanitize-releasename\"]'
+    runs-on: ubuntu-latest
+    steps:
+      - run:
+      - run: echo "${{ fromJson(env.foo)[0] }}"
+
