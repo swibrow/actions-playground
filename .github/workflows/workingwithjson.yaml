@@ -6,8 +6,8 @@ on:
 jobs:
   runshit:
     env:
-      stringjson: '"tenant_ingress_prefix": "[\"sanitize-releasename\"]"'
-      json: '"tenant_ingress_prefix": ["sanitize-releasename"]'
+      stringjson: '{"tenant_ingress_prefix": "[\"sanitize-releasename\"]"}'
+      json: '{"tenant_ingress_prefix": ["sanitize-releasename"]}'
     runs-on: ubuntu-latest
     steps:
       - run: echo "${{ fromJson(env.stringjson).tenant_ingress_prefix }}"
