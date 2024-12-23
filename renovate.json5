@@ -10,6 +10,7 @@
       fileMatch: [
         '\\.tf$',
       ],
+
       matchStrings: [
         'chart\\s*=\\s*"(?<depName>[^"\\s]+)"\\s*chart_version\\s*=\\s*"(?<currentValue>[^"\\s]+)"\\s*repository\\s*=\\s*"(?<registryUrl>[^"\\s]+)"',
       ],

@@ -26,3 +26,4 @@ module "eks_blueprints_addon" {
     }
   ]
 }
+
