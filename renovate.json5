@@ -1,25 +1,28 @@
 {
-  $schema: "https://docs.renovatebot.com/renovate-schema.json",
-  extends: ["config:recommended"],
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    'config:recommended',
+  ],
   customManagers: [
     {
+      customType: 'regex',
       description: 'Helm chart version when used with Terraform Helm module',
-      fileMatch: ['\\.tf$'],
+      fileMatch: [
+        '\\.tf$',
+      ],
       matchStrings: [
-        // Pattern to match the Helm chart, version, and repository directly in Terraform code that use Helm module
-        // This is due to version being a reserved word in Terraform, so we need to use a different name. eg chart_version
-        'chart\s*=\s*"(?<depName>[^"\s]+)"\s*chart_version\s*=\s*"(?<currentValue>[^"\s]+)"\s*repository\s*=\s*"([^"\s]+)"',
+        'charts*=s*"(?<depName>[^"s]+)"s*chart_versions*=s*"(?<currentValue>[^"s]+)"s*repositorys*=s*"([^"s]+)"',
       ],
       datasourceTemplate: 'helm',
     },
   ],
   packageRules: [
     {
-      "matchManagers": [
-        "regex"
+      matchManagers: [
+        'custom.regex',
       ],
-      "groupName": "Terraform helm packages",
-      "groupSlug": "terraform_helm"
+      groupName: 'Terraform helm packages',
+      groupSlug: 'terraform_helm',
     },
-  ]
+  ],
 }
