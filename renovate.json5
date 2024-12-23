@@ -3,13 +3,23 @@
   extends: ["config:recommended"],
   customManagers: [
     {
+      description: 'Helm chart version when used with Terraform Helm module',
       fileMatch: ['\\.tf$'],
       matchStrings: [
         // Pattern to match the Helm chart, version, and repository directly in Terraform code that use Helm module
         // This is due to version being a reserved word in Terraform, so we need to use a different name. eg chart_version
-        'chart\s*=\s*"([^"\s]+)"\s*chart_version\s*=\s*"(?<currentValue>[^"\s]+)"\s*repository\s*=\s*"([^"\s]+)"'
+        'chart\s*=\s*"(?<depName>[^"\s]+)"\s*chart_version\s*=\s*"(?<currentValue>[^"\s]+)"\s*repository\s*=\s*"([^"\s]+)"',
       ],
       datasourceTemplate: 'helm',
     },
   ],
+  packageRules: [
+    {
+      "matchManagers": [
+        "regex"
+      ],
+      "groupName": "Terraform helm packages",
+      "groupSlug": "terraform_helm"
+    },
+  ]
 }
