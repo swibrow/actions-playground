@@ -27,3 +27,20 @@ module "eks_blueprints_addon" {
   ]
 }
 
+module "prometheus_operator_crds" {
+  source = "./modules/addon"
+
+  create = var.create_addons && var.enable_prometheus_stack
+
+  chart         = "prometheus-operator-crds"
+  chart_version = "13.0.2"
+  repository    = "https://prometheus-community.github.io/helm-charts"
+  description   = "Prometheus Operator CRDs"
+  namespace     = local.monitoring_namespace
+
+  create_namespace = true
+
+  depends_on = [
+    module.eks
+  ]
+}
