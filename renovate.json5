@@ -26,5 +26,5 @@
       groupSlug: 'terraform_helm',
     },
   ],
-  enabledManagers: ['custom.regex', 'pyhton'],
+  enabledManagers: ['custom.regex'],
 }
