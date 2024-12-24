@@ -5,7 +5,7 @@ module "eks_blueprints_addon" {
   version = "~> 1.0" #ensure to update this to the latest/desired version
 
   chart         = "metrics-server"
-  chart_version = "3.8.2"
+  chart_version = "3.12.2"
   repository    = "https://kubernetes-sigs.github.io/metrics-server/"
   description   = "Metric server helm Chart deployment configuration"
   namespace     = "kube-system"
