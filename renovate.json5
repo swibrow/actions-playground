@@ -10,7 +10,6 @@
       fileMatch: [
         '\\.tf$',
       ],
-
       matchStrings: [
         'chart\\s*=\\s*"(?<depName>[^"\\s]+)"\\s*chart_version\\s*=\\s*"(?<currentValue>[^"\\s]+)"\\s*repository\\s*=\\s*"(?<registryUrl>[^"\\s]+)"',
       ],
@@ -18,16 +17,17 @@
     },
     {
       customType: 'regex',
-      fileMatch: ['^\\.github/workflows/.*\\.ya?ml$'],
-
+      fileMatch: [
+        '^\\.github/workflows/.*\\.ya?ml$',
+      ],
       matchStrings: [
         'TERRAFORM_DOCS_VERSION:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)',
-        'TFLINT_VERSION:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)'
+        'TFLINT_VERSION:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)',
       ],
       extractVersionTemplate: '^v(?<version>.*)$',
       datasourceTemplate: 'github-releases',
-      depNameTemplate: 'terraform-docs/terraform-docs'
-    }
+      depNameTemplate: 'terraform-docs/terraform-docs',
+    },
   ],
   packageRules: [
     {
@@ -38,12 +38,16 @@
       groupSlug: 'terraform_helm',
     },
     {
-      matchFileNames: ['.github/workflows/**'],
-      matchPackagePatterns: [
-        'terraform-docs/terraform-docs',
-        'terraform-linters/tflint'
+      matchFileNames: [
+        '.github/workflows/**',
       ],
-    }
+      matchPackageNames: [
+        '/terraform-docs/terraform-docs/',
+        '/terraform-linters/tflint/',
+      ],
+    },
   ],
-  enabledManagers: ['custom.regex'],
+  enabledManagers: [
+    'custom.regex',
+  ],
 }
