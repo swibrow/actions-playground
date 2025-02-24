@@ -23,3 +23,43 @@ output "random_id" {
 output "test" {
   value = "Test"
 }
+
+module "k8s_platform" {
+  source  = "tx-pts-dai/kubernetes-platform/aws"
+  version = "0.16.0+1.30"
+
+  name = var.name
+
+  cluster_admins = {
+    cicd = {
+      role_name = "cicd-iac"
+    }
+  }
+
+  tags = var.tags
+
+  vpc = {
+    vpc_id          = local.vpc_id
+    private_subnets = local.private_subnets
+    intra_subnets   = local.intra_subnets
+  }
+
+  karpenter = {
+    subnet_cidrs     = data.terraform_remote_state.network.outputs.network.grouped_networks.platform_stack_1
+    replicas         = var.karpenter_replicas
+    data_volume_size = var.karpenter_data_volume_size
+    pod_annotations = {
+      "ad.datadoghq.com/controller.checks" = jsonencode(
+        {
+          "karpenter" : {
+            "init_config" : {},
+            "instances" : [{ "openmetrics_endpoint" : "http://%%host%%:8000/metrics" }]
+          }
+        }
+      )
+    }
+    memory_request = "768Mi"
+  }
+
+  enable_downscaler = var.enable_downscaler
+}
