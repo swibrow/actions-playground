@@ -16,6 +16,18 @@
       ],
       datasourceTemplate: 'helm',
     },
+    {
+      customType: 'regex',
+      fileMatch: ['^\\.github/workflows/.*\\.ya?ml$'],
+
+      matchStrings: [
+        'TERRAFORM_DOCS_VERSION:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)',
+        'TFLINT_VERSION:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)'
+      ],
+      extractVersionTemplate: '^v(?<version>.*)$',
+      datasourceTemplate: 'github-releases',
+      depNameTemplate: 'terraform-docs/terraform-docs'
+    }
   ],
   packageRules: [
     {
@@ -25,6 +37,13 @@
       groupName: 'Terraform helm packages',
       groupSlug: 'terraform_helm',
     },
+    {
+      matchFileNames: ['.github/workflows/**'],
+      matchPackagePatterns: [
+        'terraform-docs/terraform-docs',
+        'terraform-linters/tflint'
+      ],
+    }
   ],
   enabledManagers: ['custom.regex'],
 }
