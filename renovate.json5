@@ -17,7 +17,7 @@
     },
     {
       customType: 'regex',
-      description: 'Process environment variables that contain version information',
+      description: 'Process environment variables that contain package versions',
       fileMatch: ['^.github/workflows/.*\\.ya?ml$'],
       matchStrings: [
         '[A-Z_]+_VERSION: (?<currentValue>.*) # (?<datasource>.*?)/(?<depName>.*?)\\s'
@@ -25,7 +25,7 @@
     },
     {
       customType: 'regex',
-      description: 'kass - no comment',
+      description: 'Custom Terraform module version manager for KAAS to support meta tags',
       fileMatch: ['\\.tf$'],
       matchStrings: [
         'source\\s*=\\s*"tx-pts-dai/kubernetes-platform/aws"\\s*\\n\\s*version\\s*=\\s*"(?<currentValue>.*?)".*'
@@ -41,6 +41,13 @@
       ],
       groupName: 'Terraform helm packages',
       groupSlug: 'terraform_helm',
+    },
+    {
+      matchManagers: ['custom.regex'],
+      matchDatasources: ['github-releases'],
+      matchPackageNames: ['tx-pts-dai/terraform-aws-kubernetes-platform'],
+      groupName: 'Terraform Module KAAS',
+      groupSlug: 'terraform-module-kaas',
     },
   ]
 }
