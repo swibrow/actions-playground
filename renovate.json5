@@ -17,17 +17,12 @@
     },
     {
       customType: 'regex',
-      fileMatch: [
-        '^\\.github/workflows/.*\\.ya?ml$',
-      ],
+      description: 'Process environment variables that contain version information',
+      fileMatch: ['^.github/workflows/.*\\.ya?ml$'],
       matchStrings: [
-        'TERRAFORM_DOCS_VERSION:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)',
-        'TFLINT_VERSION:\\s*(?<currentValue>v\\d+\\.\\d+\\.\\d+)',
-      ],
-      extractVersionTemplate: '^v(?<version>.*)$',
-      datasourceTemplate: 'github-releases',
-      depNameTemplate: 'terraform-docs/terraform-docs',
-    },
+        '[A-Z_]+_VERSION: (?<currentValue>.*) # (?<datasource>.*?)/(?<depName>.*?)\\s'
+      ]
+    }
   ],
   packageRules: [
     {
@@ -36,15 +31,6 @@
       ],
       groupName: 'Terraform helm packages',
       groupSlug: 'terraform_helm',
-    },
-    {
-      matchFileNames: [
-        '.github/workflows/**',
-      ],
-      matchPackageNames: [
-        '/terraform-docs/terraform-docs/',
-        '/terraform-linters/tflint/',
-      ],
     },
   ],
   enabledManagers: [
