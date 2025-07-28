@@ -11,6 +11,6 @@ permissions:
 
 jobs:
   test:
-    uses: tx-pts-dai/github-workflows/.github/workflows/tf-dflook-cleanup.yaml@v2.5.1
+    uses: DND-IT/github-workflows/.github/workflows/tf-dflook-cleanup.yaml@v2.5.1
     with:
       environment: dev
