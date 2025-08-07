@@ -26,7 +26,7 @@ output "test" {
 
 module "k8s_platform" {
   source  = "tx-pts-dai/kubernetes-platform/aws"
-  version = "0.16.0+1.31"
+  version = "2.4.0+1.32"
 
   name = var.name
 
