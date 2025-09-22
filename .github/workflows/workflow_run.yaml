@@ -1,0 +1,25 @@
+name: Reuse Artifacts in Cleanup Job
+
+on:
+  workflow_run:
+    workflows: ["Create Artifacts"]
+    types:
+      - completed
+
+
+jobs:
+  cleanup:
+    runs-on: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Download artifact
+        uses: dawidd6/action-download-artifact@v11
+        with:
+          run_id: ${{ github.event.workflow_run.id }}
+          name: cleanup
+
+      - run: |
+          KUBE_NS=$(cat ./cleanup/kube_ns)
+          if [ -z "$KUBE_NS" ]; then echo "Namespace missing, cancelling."; exit 1; fi
+          echo "KUBE_NS=$KUBE_NS" >> $GITHUB_ENV
