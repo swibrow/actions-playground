@@ -1,0 +1,22 @@
+name: Create Artifacts
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  create-artifacts:
+    runs-on: ubuntu-latest
+    env:
+      KUBE_NS: "test-namespace-${{ github.run_id }}"
+    steps:
+      - run: |
+          mkdir ./cleanup
+          echo -n $KUBE_NS > ./cleanup/kube_ns
+
+      - name: Upload namespace as artifact for cleanup job
+        uses: actions/upload-artifact@v4
+        with:
+          name: cleanup
+          path: cleanup/
