@@ -14,11 +14,28 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Download artifact
+        id: download-artifact
         uses: dawidd6/action-download-artifact@v11
         with:
           run_id: ${{ github.event.workflow_run.id }}
           name: cleanup
 
-      - run: |
-          cat ./kube_ns
+      - name: Process downloaded artifacts
+        run: |
+          echo "Artifacts output: ${{ steps.download-artifact.outputs.artifacts }}"
+
+          # Parse the artifacts JSON to find the download path
+          echo "${{ steps.download-artifact.outputs.artifacts }}" | jq -r '.[].name' | while read artifact; do
+            echo "Processing artifact: $artifact"
+            if [ -f "./$artifact/kube_ns" ]; then
+              echo "Found kube_ns in $artifact:"
+              cat "./$artifact/kube_ns"
+            elif [ -f "./kube_ns" ]; then
+              echo "Found kube_ns in current directory:"
+              cat "./kube_ns"
+            else
+              echo "Checking all possible locations:"
+              find . -name "kube_ns" -type f -exec echo "Found at: {}" \; -exec cat {} \;
+            fi
+          done
 
