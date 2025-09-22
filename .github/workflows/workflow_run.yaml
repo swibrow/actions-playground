@@ -20,6 +20,6 @@ jobs:
           name: cleanup
 
       - run: |
-          KUBE_NS=$(cat ./cleanup/kube_ns)
+          KUBE_NS=$(cat ./kube_ns)
           if [ -z "$KUBE_NS" ]; then echo "Namespace missing, cancelling."; exit 1; fi
           echo "KUBE_NS=$KUBE_NS" >> $GITHUB_ENV
