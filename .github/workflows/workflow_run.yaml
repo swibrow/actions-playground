@@ -15,7 +15,7 @@ jobs:
 
       - name: Download artifact
         id: download-artifact
-        uses: dawidd6/action-download-artifact@v11
+        uses: dawidd6/action-download-artifact@v14
         with:
           run_id: ${{ github.event.workflow_run.id }}
           name: cleanup
