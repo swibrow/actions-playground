@@ -16,7 +16,7 @@ jobs:
           echo -n $KUBE_NS > ./cleanup/kube_ns
 
       - name: Upload namespace as artifact for cleanup job
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: cleanup
           path: cleanup/
