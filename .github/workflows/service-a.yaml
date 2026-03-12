@@ -10,6 +10,9 @@ on:
       - ".github/workflows/_release-pipeline.yaml"
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   release:
     uses: ./.github/workflows/_release-pipeline.yaml
