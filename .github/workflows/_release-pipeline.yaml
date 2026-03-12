@@ -48,7 +48,7 @@ jobs:
             --tag-pattern '^${{ inputs.service_name }}-v'
             --include-path '${{ inputs.service_path }}/**'
         run: |
-          VERSION=$(git-cliff $CLIFF_ARGS --bumped-version 2>/dev/null) || true
+          VERSION=$(git-cliff $CLIFF_ARGS --bumped-version) || true
           VERSION="${VERSION#v}"
 
           if [ -z "$VERSION" ]; then
