@@ -46,13 +46,23 @@ jobs:
       - name: Determine release version
         id: release
         run: |
+          echo "=== Debug ==="
+          echo "Tags matching pattern:"
+          git tag --list "${SERVICE_NAME}-v*"
+          echo "Commits since last tag:"
+          LAST_TAG=$(git tag --list "${SERVICE_NAME}-v*" --sort=-version:refname | head -1)
+          echo "Last tag: $LAST_TAG"
+          git log --oneline "${LAST_TAG}..HEAD" -- "${SERVICE_PATH}/"
+          echo "=== Running git-cliff ==="
           VERSION=$(git-cliff \
             --config cliff.toml \
             --tag-pattern "^${SERVICE_NAME}-v" \
             --include-path "${SERVICE_PATH}/**" \
             --bumped-version) || true
+          echo "Raw bumped-version output: '$VERSION'"
           VERSION="${VERSION#${SERVICE_NAME}-v}"
           VERSION="${VERSION#v}"
+          echo "Stripped version: '$VERSION'"
 
           if [ -z "$VERSION" ]; then
             echo "No releasable changes"
