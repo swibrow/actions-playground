@@ -51,6 +51,7 @@ jobs:
             --tag-pattern "^${SERVICE_NAME}-v" \
             --include-path "${SERVICE_PATH}/**" \
             --bumped-version) || true
+          VERSION="${VERSION#${SERVICE_NAME}-v}"
           VERSION="${VERSION#v}"
 
           if [ -z "$VERSION" ]; then
