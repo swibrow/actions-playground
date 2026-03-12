@@ -38,10 +38,7 @@ jobs:
           fetch-depth: 0
 
       - name: Install git-cliff
-        uses: orhun/git-cliff-action@v4
-        with:
-          config: cliff.toml
-          args: --version
+        uses: taiki-e/install-action@git-cliff
 
       - name: Determine release version
         id: release
