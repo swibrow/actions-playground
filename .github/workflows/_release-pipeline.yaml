@@ -31,6 +31,9 @@ jobs:
     outputs:
       new_release_published: ${{ steps.release.outputs.new_release_published }}
       new_release_version: ${{ steps.release.outputs.new_release_version }}
+    env:
+      SERVICE_NAME: ${{ inputs.service_name }}
+      SERVICE_PATH: ${{ inputs.service_path }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -42,13 +45,12 @@ jobs:
 
       - name: Determine release version
         id: release
-        env:
-          CLIFF_ARGS: >-
-            --config cliff.toml
-            --tag-pattern '^${{ inputs.service_name }}-v'
-            --include-path '${{ inputs.service_path }}/**'
         run: |
-          VERSION=$(git-cliff $CLIFF_ARGS --bumped-version) || true
+          VERSION=$(git-cliff \
+            --config cliff.toml \
+            --tag-pattern "^${SERVICE_NAME}-v" \
+            --include-path "${SERVICE_PATH}/**" \
+            --bumped-version) || true
           VERSION="${VERSION#v}"
 
           if [ -z "$VERSION" ]; then
@@ -57,7 +59,7 @@ jobs:
             exit 0
           fi
 
-          TAG="${{ inputs.service_name }}-v${VERSION}"
+          TAG="${SERVICE_NAME}-v${VERSION}"
           if git tag --list | grep -qx "${TAG}"; then
             echo "Tag $TAG already exists, no new release"
             echo "new_release_published=false" >> $GITHUB_OUTPUT
@@ -70,13 +72,13 @@ jobs:
 
       - name: Generate release notes
         if: steps.release.outputs.new_release_published == 'true'
-        env:
-          CLIFF_ARGS: >-
-            --config cliff.toml
-            --tag-pattern '^${{ inputs.service_name }}-v'
-            --include-path '${{ inputs.service_path }}/**'
         run: |
-          git-cliff $CLIFF_ARGS --bump --unreleased --strip header -o /tmp/RELEASE_NOTES.md
+          git-cliff \
+            --config cliff.toml \
+            --tag-pattern "^${SERVICE_NAME}-v" \
+            --include-path "${SERVICE_PATH}/**" \
+            --bump --unreleased --strip header \
+            -o /tmp/RELEASE_NOTES.md
           echo "Release notes:"
           cat /tmp/RELEASE_NOTES.md
 
