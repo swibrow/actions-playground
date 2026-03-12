@@ -59,12 +59,14 @@ jobs:
             --config cliff.toml \
             --tag-pattern "^${SERVICE_NAME}-v" \
             --include-path "${SERVICE_PATH}/**" \
+            --unreleased \
             --bumped-version 2>&1 || true
           echo "=== Running git-cliff (capture) ==="
           VERSION=$(git-cliff \
             --config cliff.toml \
             --tag-pattern "^${SERVICE_NAME}-v" \
             --include-path "${SERVICE_PATH}/**" \
+            --unreleased \
             --bumped-version) || true
           echo "Raw bumped-version output: '$VERSION'"
           VERSION="${VERSION#${SERVICE_NAME}-v}"
