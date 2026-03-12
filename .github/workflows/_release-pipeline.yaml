@@ -1,0 +1,99 @@
+name: _Release Pipeline
+
+on:
+  workflow_call:
+    inputs:
+      service_name:
+        description: "Name of the service"
+        required: true
+        type: string
+      service_path:
+        description: "Path to the service directory"
+        required: true
+        type: string
+    outputs:
+      new_release_published:
+        description: "Whether a new release was published ('true' or 'false')"
+        value: ${{ jobs.release.outputs.new_release_published }}
+      new_release_version:
+        description: "Version of the new release (e.g. 1.3.0)"
+        value: ${{ jobs.release.outputs.new_release_version }}
+
+jobs:
+  release:
+    name: Release
+    if: |
+      (github.event_name == 'push' || github.event_name == 'workflow_dispatch') &&
+      github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      new_release_published: ${{ steps.release.outputs.new_release_published }}
+      new_release_version: ${{ steps.release.outputs.new_release_version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install git-cliff
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: --version
+
+      - name: Determine release version
+        id: release
+        env:
+          CLIFF_ARGS: >-
+            --config cliff.toml
+            --tag-pattern '^${{ inputs.service_name }}-v'
+            --include-path '${{ inputs.service_path }}/**'
+        run: |
+          VERSION=$(git-cliff $CLIFF_ARGS --bumped-version 2>/dev/null) || true
+          VERSION="${VERSION#v}"
+
+          if [ -z "$VERSION" ]; then
+            echo "No releasable changes"
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          TAG="${{ inputs.service_name }}-v${VERSION}"
+          if git tag --list | grep -qx "${TAG}"; then
+            echo "Tag $TAG already exists, no new release"
+            echo "new_release_published=false" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
+          echo "Next release version: $VERSION"
+          echo "new_release_published=true" >> $GITHUB_OUTPUT
+          echo "new_release_version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Generate release notes
+        if: steps.release.outputs.new_release_published == 'true'
+        env:
+          CLIFF_ARGS: >-
+            --config cliff.toml
+            --tag-pattern '^${{ inputs.service_name }}-v'
+            --include-path '${{ inputs.service_path }}/**'
+        run: |
+          git-cliff $CLIFF_ARGS --bump --unreleased --strip header -o /tmp/RELEASE_NOTES.md
+          echo "Release notes:"
+          cat /tmp/RELEASE_NOTES.md
+
+      - name: Create tag and GitHub release
+        if: steps.release.outputs.new_release_published == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.service_name }}-v${{ steps.release.outputs.new_release_version }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "$TAG" -m "chore(release): $TAG"
+          git push origin "$TAG"
+          gh release create "$TAG" \
+            --title "$TAG" \
+            --notes-file /tmp/RELEASE_NOTES.md \
+            --target "${{ github.sha }}"

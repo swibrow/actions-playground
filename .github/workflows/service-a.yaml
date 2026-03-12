@@ -1,0 +1,18 @@
+name: Service A
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "services/service-a/**"
+      - "cliff.toml"
+      - ".github/workflows/service-a.yaml"
+      - ".github/workflows/_release-pipeline.yaml"
+  workflow_dispatch:
+
+jobs:
+  release:
+    uses: ./.github/workflows/_release-pipeline.yaml
+    with:
+      service_name: service-a
+      service_path: services/service-a
