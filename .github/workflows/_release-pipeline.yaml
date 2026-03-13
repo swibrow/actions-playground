@@ -43,52 +43,26 @@ jobs:
       - name: Install git-cliff
         uses: taiki-e/install-action@git-cliff
 
-      - name: Determine release version
+      - name: Release
         id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          VERSION=$(git-cliff \
-            --config cliff.toml \
-            --tag-pattern "^${SERVICE_NAME}-v" \
-            --include-path "${SERVICE_PATH}/**" \
-            --unreleased \
-            --bumped-version) || true
+          CLIFF_ARGS="--config cliff.toml --tag-pattern ^${SERVICE_NAME}-v --include-path ${SERVICE_PATH}/**"
+
+          VERSION=$(git-cliff $CLIFF_ARGS --unreleased --bumped-version) || true
           VERSION="${VERSION#${SERVICE_NAME}-v}"
           VERSION="${VERSION#v}"
 
-          if [ -z "$VERSION" ]; then
-            echo "No releasable changes"
-            echo "new_release_published=false" >> $GITHUB_OUTPUT
-            exit 0
-          fi
-
           TAG="${SERVICE_NAME}-v${VERSION}"
-          if git tag --list | grep -qx "${TAG}"; then
-            echo "Tag $TAG already exists, no new release"
+          if [ -z "$VERSION" ] || git tag --list | grep -qx "${TAG}"; then
+            echo "No new release"
             echo "new_release_published=false" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-          echo "Next release version: $VERSION"
-          echo "new_release_published=true" >> $GITHUB_OUTPUT
-          echo "new_release_version=$VERSION" >> $GITHUB_OUTPUT
+          git-cliff $CLIFF_ARGS --bump --unreleased --strip header -o /tmp/RELEASE_NOTES.md
 
-      - name: Generate release notes
-        if: steps.release.outputs.new_release_published == 'true'
-        run: |
-          git-cliff \
-            --config cliff.toml \
-            --tag-pattern "^${SERVICE_NAME}-v" \
-            --include-path "${SERVICE_PATH}/**" \
-            --bump --unreleased --strip header \
-            -o /tmp/RELEASE_NOTES.md
-          cat /tmp/RELEASE_NOTES.md
-
-      - name: Create tag and GitHub release
-        if: steps.release.outputs.new_release_published == 'true'
-        env:
-          GH_TOKEN: ${{ github.token }}
-          TAG: ${{ inputs.service_name }}-v${{ steps.release.outputs.new_release_version }}
-        run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag -a "$TAG" -m "chore(release): $TAG"
@@ -97,3 +71,6 @@ jobs:
             --title "$TAG" \
             --notes-file /tmp/RELEASE_NOTES.md \
             --target "${{ github.sha }}"
+
+          echo "new_release_published=true" >> $GITHUB_OUTPUT
+          echo "new_release_version=$VERSION" >> $GITHUB_OUTPUT
