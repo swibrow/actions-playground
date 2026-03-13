@@ -40,28 +40,36 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Install git-cliff
-        uses: taiki-e/install-action@git-cliff
+      - name: Generate changelog
+        id: cliff
+        uses: orhun/git-cliff-action@v4
+        with:
+          config: cliff.toml
+          args: >-
+            --bump
+            --unreleased
+            --strip header
+            --tag-pattern ^${{ inputs.service_name }}-v
+            --include-path ${{ inputs.service_path }}/**
+        env:
+          OUTPUT: /tmp/RELEASE_NOTES.md
+          GITHUB_REPO: ${{ github.repository }}
 
-      - name: Release
+      - name: Create release
         id: release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          CLIFF_ARGS="--config cliff.toml --tag-pattern ^${SERVICE_NAME}-v --include-path ${SERVICE_PATH}/**"
-
-          VERSION=$(git-cliff $CLIFF_ARGS --unreleased --bumped-version) || true
+          VERSION="${{ steps.cliff.outputs.version }}"
           VERSION="${VERSION#${SERVICE_NAME}-v}"
           VERSION="${VERSION#v}"
-
           TAG="${SERVICE_NAME}-v${VERSION}"
+
           if [ -z "$VERSION" ] || git tag --list | grep -qx "${TAG}"; then
             echo "No new release"
             echo "new_release_published=false" >> $GITHUB_OUTPUT
             exit 0
           fi
-
-          git-cliff $CLIFF_ARGS --bump --unreleased --strip header -o /tmp/RELEASE_NOTES.md
 
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
