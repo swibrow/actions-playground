@@ -49,11 +49,10 @@ jobs:
             --bump
             --unreleased
             --strip header
-            --tag-pattern ^${{ inputs.service_name }}-v
-            --include-path ${{ inputs.service_path }}/**
+            --tag-pattern '^${{ inputs.service_name }}-[0-9]'
+            --include-path '${{ inputs.service_path }}/**'
         env:
           OUTPUT: /tmp/RELEASE_NOTES.md
-          GITHUB_REPO: ${{ github.repository }}
 
       - name: Create release
         id: release
@@ -61,9 +60,8 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           VERSION="${{ steps.cliff.outputs.version }}"
-          VERSION="${VERSION#${SERVICE_NAME}-v}"
-          VERSION="${VERSION#v}"
-          TAG="${SERVICE_NAME}-v${VERSION}"
+          VERSION="${VERSION#${SERVICE_NAME}-}"
+          TAG="${SERVICE_NAME}-${VERSION}"
 
           if [ -z "$VERSION" ] || git tag --list | grep -qx "${TAG}"; then
             echo "No new release"
