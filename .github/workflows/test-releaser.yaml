@@ -1,0 +1,59 @@
+name: test-releaser
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+    inputs:
+      release-mode:
+        description: 'Release mode: direct or pr'
+        required: false
+        default: 'direct'
+      version-strategy:
+        description: 'Version strategy: semver, date-rolling, or numeric-rolling'
+        required: false
+        default: 'semver'
+      dry-run:
+        description: 'Dry run (true/false)'
+        required: false
+        default: 'true'
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run action-releaser
+        id: release
+        uses: dnd-it/action-releaser@main
+        with:
+          version-strategy: ${{ github.event.inputs.version-strategy || 'semver' }}
+          release-mode: ${{ github.event.inputs.release-mode || 'direct' }}
+          dry-run: ${{ github.event.inputs.dry-run || 'true' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Show outputs
+        run: |
+          echo "version:          ${{ steps.release.outputs.version }}"
+          echo "tag:              ${{ steps.release.outputs.tag }}"
+          echo "release-url:      ${{ steps.release.outputs.release-url }}"
+          echo "pr-url:           ${{ steps.release.outputs.pr-url }}"
+          echo "previous-version: ${{ steps.release.outputs.previous-version }}"
+          echo "skipped:          ${{ steps.release.outputs.skipped }}"
+          echo "dry-run:          ${{ steps.release.outputs.dry-run }}"
+          echo "---"
+          echo "changelog:"
+          echo "${{ steps.release.outputs.changelog }}"
