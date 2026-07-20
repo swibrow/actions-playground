@@ -2,6 +2,7 @@
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
     'config:recommended',
+    'github>tx-pts-dai/renovate-config:github-workflows-per-workflow-tags.json5#feat/github-workflows-per-workflow-tags',
   ],
   packageRules: [
     {

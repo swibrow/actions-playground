@@ -1,0 +1,16 @@
+name: Test Docker Build Push ECR
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    uses: DND-IT/github-workflows/.github/workflows/docker-build-push-ecr.yaml@ca63853e965fbe81e3e9b121249550ec609efe83 # v4.0.1
+    with:
+      environment: test
+      aws_account_id: "000000000000"
+      aws_region: eu-central-1
+      aws_role_name: test-role
+      image_name: test-image
+      docker_context: .
+      docker_push: false
