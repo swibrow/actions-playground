@@ -7,11 +7,11 @@ on:
 
 jobs:
   context:
-    runs-on: ubuntu-latest
+    runs-on: actions-playground
     steps:
       - run: ${{ github }}
   echo:
     if: github.ref_type == 'tag'
-    runs-on: ubuntu-latest
+    runs-on: actions-playground
     steps:
       - run: echo "This is a PR branch that should be ignored"

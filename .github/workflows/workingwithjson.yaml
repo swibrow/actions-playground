@@ -8,7 +8,7 @@ jobs:
     env:
       stringjson: '{"tenant_ingress_prefix": "[\"sanitize-releasename\"]"}'
       json: '{"tenant_ingress_prefix": ["sanitize-releasename"]}'
-    runs-on: ubuntu-latest
+    runs-on: actions-playground
     steps:
       - run: echo "${{ fromJson(env.stringjson).tenant_ingress_prefix }}"
       - run: echo "${{ fromJson(env.stringjson).tenant_ingress_prefix[0] }}"
