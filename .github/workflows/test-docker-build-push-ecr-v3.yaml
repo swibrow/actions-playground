@@ -5,7 +5,7 @@ on:
 
 jobs:
   build:
-    uses: DND-IT/github-workflows/.github/workflows/docker-build-push-ecr.yaml@06ac966491fd2b5c553817df343a3da6dde61ae2 # v3.22.0
+    uses: DND-IT/github-workflows/.github/workflows/docker-build-push-ecr.yaml@fb2e7bb5b4dc6f0486fa62a8c9151f378257e24d # docker-build-push-ecr-v0.1.0
     with:
       environment: test
       aws_account_id: "000000000000"
